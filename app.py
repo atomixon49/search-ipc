@@ -19,7 +19,7 @@ def buscar_ipc():
 
     params = {
         "engine": "google",
-        "q": "variación anual IPC Colombia DANE",
+        "q": "variación anual IPC Colombia DANE 2026",
         "hl": "es",
         "api_key": SERPAPI_KEY
     }
