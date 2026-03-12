@@ -1,16 +1,16 @@
 from flask import Flask, jsonify
 import requests
 import os
-from google import genai
+from groq import Groq
 
 app = Flask(__name__)
 
 # leer API keys desde variables de entorno
 SERPAPI_KEY = os.getenv("SERPAPI_KEY")
-GEMINI_KEY = os.getenv("GEMINI_KEY")
+GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 
-# cliente Gemini
-client = genai.Client(api_key=GEMINI_KEY)
+# cliente Groq
+client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
 
 def buscar_ipc():
@@ -40,20 +40,24 @@ def extraer_ipc(texto):
 
     prompt = f"""
     Extrae el IPC anual actual de Colombia del siguiente texto.
-    Devuelve solo el número con porcentaje.
-    Ejemplo de respuesta: 5.29%
+
+    REGLAS:
+    - devuelve solo el número con porcentaje
+    - no agregues explicación
+    - ejemplo de salida: 5.29%
 
     TEXTO:
     {texto}
     """
 
-    response = client.models.generate_content(
-        model="gemini-2.0-flash",
-        contents=prompt
+    chat_completion = client.chat.completions.create(
+        messages=[
+            {"role": "user", "content": prompt}
+        ],
+        model="llama3-70b-8192"
     )
 
-    return response.text.strip()
-
+    return chat_completion.choices[0].message.content.strip()
 
 @app.route("/")
 def home():
