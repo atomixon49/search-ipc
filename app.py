@@ -1,9 +1,11 @@
 from flask import Flask, jsonify
+from flask_cors import CORS
 import requests
 import os
 from groq import Groq
 
 app = Flask(__name__)
+CORS(app, origins=["https://itaca-sa-s-v2.pages.dev"])
 
 # leer API keys desde variables de entorno
 SERPAPI_KEY = os.getenv("SERPAPI_KEY")
